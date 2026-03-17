@@ -1,3 +1,4 @@
+option explicit
 ' ------------------------
 ' Tokenização do path
 ' ------------------------
