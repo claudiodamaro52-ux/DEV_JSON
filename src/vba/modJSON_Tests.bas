@@ -3,71 +3,71 @@ Option Explicit
 
 ' =========================================
 ' Test Runner: DEV_JSON (Fase 3.2)
-' Valida: JSON_Unflatten + JSON_Normalizar
-' Comparação: string exata (normalizada)
+' Compatível: MS Access 2016 (VBA)
 ' =========================================
 
 Public Sub RunAllTests_32()
-    Dim passed As Long, failed As Long
+    Dim passed As Long
+    Dim failed As Long
 
     Debug.Print String(60, "=")
-    Debug.Print "RunAllTests_32 - início"
+    Debug.Print "RunAllTests_32 - inicio"
     Debug.Print String(60, "=")
 
-    RunOneTest_32 "Caso1_obj_simples", _
-        JoinLines(Array( _
-            "a = 1", _
-            "b = \"x\"" _
-        )), _
-        "{\"a\":1,\"b\":\"x\"}", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso1_obj_simples", _
+        "a = 1" & vbCrLf & _
+        "b = ""x""", _
+        "{""a"":1,""b"":""x""}", _
+        passed, failed _
+    )
 
-    RunOneTest_32 "Caso2_obj_aninhado", _
-        JoinLines(Array( _
-            "b.c = 2", _
-            "b.d = 3" _
-        )), _
-        "{\"b\":{\"c\":2,\"d\":3}}", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso2_obj_aninhado", _
+        "b.c = 2" & vbCrLf & _
+        "b.d = 3", _
+        "{""b"":{""c"":2,""d"":3}}", _
+        passed, failed _
+    )
 
-    RunOneTest_32 "Caso3_array_valores", _
-        JoinLines(Array( _
-            "a = 1", _
-            "b.c = 2", _
-            "b.d[0] = 1", _
-            "b.d[1] = 2", _
-            "b.d[2] = 3" _
-        )), _
-        "{\"a\":1,\"b\":{\"c\":2,\"d\":[1,2,3]}}", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso3_array_valores", _
+        "a = 1" & vbCrLf & _
+        "b.c = 2" & vbCrLf & _
+        "b.d[0] = 1" & vbCrLf & _
+        "b.d[1] = 2" & vbCrLf & _
+        "b.d[2] = 3", _
+        "{""a"":1,""b"":{""c"":2,""d"":[1,2,3]}}", _
+        passed, failed _
+    )
 
-    RunOneTest_32 "Caso4_array_objetos", _
-        JoinLines(Array( _
-            "itens[0].sku = 123", _
-            "itens[0].preco = 9.9", _
-            "itens[1].sku = 456" _
-        )), _
-        "{\"itens\":[{\"sku\":123,\"preco\":9.9},{\"sku\":456}]} ", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso4_array_objetos", _
+        "itens[0].sku = 123" & vbCrLf & _
+        "itens[0].preco = 9.9" & vbCrLf & _
+        "itens[1].sku = 456", _
+        "{""itens"":[{""sku"":123,""preco"":9.9},{""sku"":456}]}", _
+        passed, failed _
+    )
 
-    RunOneTest_32 "Caso5_mix_obj_arrObj_arrVal", _
-        JoinLines(Array( _
-            "pedido.id = 10", _
-            "pedido.itens[0].sku = 123", _
-            "pedido.itens[0].qtd = 2", _
-            "pedido.itens[1].sku = 456", _
-            "pedido.valores[0] = 9.9", _
-            "pedido.valores[1] = 1.5" _
-        )), _
-        "{\"pedido\":{\"id\":10,\"itens\":[{\"sku\":123,\"qtd\":2},{\"sku\":456}],\"valores\":[9.9,1.5]}}", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso5_mix_obj_arrObj_arrVal", _
+        "pedido.id = 10" & vbCrLf & _
+        "pedido.itens[0].sku = 123" & vbCrLf & _
+        "pedido.itens[0].qtd = 2" & vbCrLf & _
+        "pedido.itens[1].sku = 456" & vbCrLf & _
+        "pedido.valores[0] = 9.9" & vbCrLf & _
+        "pedido.valores[1] = 1.5", _
+        "{""pedido"":{""id"":10,""itens"":[{""sku"":123,""qtd"":2},{""sku"":456}],""valores"":[9.9,1.5]}}", _
+        passed, failed _
+    )
 
-    RunOneTest_32 "Caso6_buraco_array_objetos", _
-        JoinLines(Array( _
-            "itens[2].sku = 999" _
-        )), _
-        "{\"itens\":[{},{},{\"sku\":999}]} ", _
-        passed, failed
+    Call RunOneTest_32( _
+        "Caso6_buraco_array_objetos", _
+        "itens[2].sku = 999", _
+        "{""itens"":[{},{},{""sku"":999}]}", _
+        passed, failed _
+    )
 
     Debug.Print String(60, "-")
     Debug.Print "RunAllTests_32 - fim"
@@ -75,7 +75,7 @@ Public Sub RunAllTests_32()
     Debug.Print String(60, "=")
 
     If failed > 0 Then
-        Err.Raise vbObjectError + 32001, "RunAllTests_32", "Há testes falhando: " & failed
+        Err.Raise vbObjectError + 32001, "RunAllTests_32", "Ha testes falhando: " & failed
     End If
 End Sub
 
@@ -110,16 +110,3 @@ EH:
     Debug.Print "ERROR: " & testName
     Debug.Print "Err " & Err.Number & ": " & Err.Description
 End Sub
-
-Private Function JoinLines(ByVal a As Variant) As String
-    Dim i As Long
-    Dim s As String
-
-    s = ""
-    For i = LBound(a) To UBound(a)
-        If s <> "" Then s = s & vbCrLf
-        s = s & CStr(a(i))
-    Next i
-
-    JoinLines = s
-End Function
