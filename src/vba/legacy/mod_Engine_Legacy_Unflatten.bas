@@ -1,6 +1,90 @@
 ' ------------------------
 “LEGACY / não usar em produção”
 ' ------------------------
+Public Function JSON_Unflatten(ByRef prmTxt As String) As String
+    Dim linhas() As String
+    Dim i As Long, j As Long
+    Dim linha As String
+    Dim path As String, rawValue As String
+
+    Dim json As String
+
+    ' context stack
+    Dim ctxType() As String   ' "obj" or "arr"
+    Dim ctxName() As String   ' key name (or "$")
+    Dim ctxArrIndex() As Long ' last written index (arr only)
+    Dim top As Long
+
+    ' path tokens (contexts only)
+    Dim tokType() As String      ' "obj" / "arrVal" / "arrObj"
+    Dim tokName() As String      ' key name
+    Dim tokIdx() As Long         ' index for arrVal/arrObj, else -1
+    Dim tokCount As Long
+
+    ' final write target
+    Dim lastKind As String       ' "key" / "arrVal" (write item)
+    Dim lastKey As String
+    Dim lastIdx As Long
+
+    linhas = Split(prmTxt, vbCrLf)
+
+    ReDim ctxType(0 To 400)
+    ReDim ctxName(0 To 400)
+    ReDim ctxArrIndex(0 To 400)
+    top = -1
+
+    json = "{"
+    PushCtx ctxType, ctxName, ctxArrIndex, top, "obj", "$", -1
+
+    For i = 0 To UBound(linhas)
+        linha = Trim$(linhas(i))
+        If linha = "" Then GoTo Proximo
+        If InStr(1, linha, "=", vbBinaryCompare) = 0 Then GoTo Proximo
+
+        path = Trim$(Left$(linha, InStr(1, linha, "=", vbBinaryCompare) - 1))
+        rawValue = Trim$(Mid$(linha, InStr(1, linha, "=", vbBinaryCompare) + 1))
+
+        TokenizarPath_32 path, tokType, tokName, tokIdx, tokCount, lastKind, lastKey, lastIdx
+
+        ' 1) close to common prefix
+        FecharAtePrefixoComum_32 tokType, tokName, tokIdx, tokCount, ctxType, ctxName, ctxArrIndex, top, json
+
+        ' 2) open missing contexts
+        AbrirContextos_32 tokType, tokName, tokIdx, tokCount, ctxType, ctxName, ctxArrIndex, top, json
+
+        ' 3) emit final value
+        If lastKind = "key" Then
+            json = json & vbCrLf & Indent(top) & """" & lastKey & """: " & ValorJSON(rawValue) & ","
+ElseIf lastKind = "arrValItem" Then
+    ' estamos dentro do array (ctx "arr") com o nome lastKey
+    If Not (top >= 0 And ctxType(top) = "arr" And ctxName(top) = lastKey) Then
+        ' fallback: abre/entra no array
+        AbrirOuEntrarArrayValores lastKey, ctxType, ctxName, ctxArrIndex, top, json
+    End If
+
+    j = ctxArrIndex(top) + 1
+    Do While j < lastIdx
+        json = json & vbCrLf & Indent(top) & "null,"
+        ctxArrIndex(top) = j
+        j = j + 1
+    Loop
+
+    json = json & vbCrLf & Indent(top) & ValorJSON(rawValue) & ","
+    ctxArrIndex(top) = lastIdx
+End If
+
+Proximo:
+    Next i
+
+    Do While top >= 0
+        FecharCtx ctxType, ctxName, ctxArrIndex, top, json
+    Loop
+
+    JSON_Unflatten = json
+End Function
+
+
+
 ' ------------------------
 ' Tokenização do path
 ' ------------------------
