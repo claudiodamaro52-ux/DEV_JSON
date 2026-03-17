@@ -1,7 +1,10 @@
-option explicit
+' ------------------------
+“LEGACY / não usar em produção”
+' ------------------------
 ' ------------------------
 ' Tokenização do path
 ' ------------------------
+option explicit
 Private Sub TokenizarPath(ByVal path As String, _
                           ByRef tokType() As String, ByRef tokName() As String, ByRef tokCount As Long, _
                           ByRef lastIsArrayItem As Boolean, ByRef lastArrIdx As Long, ByRef lastKey As String)
