@@ -17,8 +17,8 @@ Public Sub RunAllTests_32()
     Call RunOneTest_32( _
         "Caso1_obj_simples", _
         "a = 1" & vbCrLf & _
-        "b = ""x""", _
-        "{""a"":1,""b"":""x""}", _
+        "b = \"x\"", _
+        "{\"a\":1,\"b\":\"x\"}", _
         passed, failed _
     )
 
@@ -26,7 +26,7 @@ Public Sub RunAllTests_32()
         "Caso2_obj_aninhado", _
         "b.c = 2" & vbCrLf & _
         "b.d = 3", _
-        "{""b"":{""c"":2,""d"":3}}", _
+        "{\"b\":{\"c\":2,\"d\":3}}", _
         passed, failed _
     )
 
@@ -37,7 +37,7 @@ Public Sub RunAllTests_32()
         "b.d[0] = 1" & vbCrLf & _
         "b.d[1] = 2" & vbCrLf & _
         "b.d[2] = 3", _
-        "{""a"":1,""b"":{""c"":2,""d"":[1,2,3]}}", _
+        "{\"a\":1,\"b\":{\"c\":2,\"d\":[1,2,3]}}", _
         passed, failed _
     )
 
@@ -46,7 +46,7 @@ Public Sub RunAllTests_32()
         "itens[0].sku = 123" & vbCrLf & _
         "itens[0].preco = 9.9" & vbCrLf & _
         "itens[1].sku = 456", _
-        "{""itens"":[{""sku"":123,""preco"":9.9},{""sku"":456}]}", _
+        "{\"itens\":[{\"sku\":123,\"preco\":9.9},{\"sku\":456}]}" ,_
         passed, failed _
     )
 
@@ -58,14 +58,14 @@ Public Sub RunAllTests_32()
         "pedido.itens[1].sku = 456" & vbCrLf & _
         "pedido.valores[0] = 9.9" & vbCrLf & _
         "pedido.valores[1] = 1.5", _
-        "{""pedido"":{""id"":10,""itens"":[{""sku"":123,""qtd"":2},{""sku"":456}],""valores"":[9.9,1.5]}}", _
+        "{\"pedido\":{\"id\":10,\"itens\":[{\"sku\":123,\"qtd\":2},{\"sku\":456}],\"valores\":[9.9,1.5]}}", _
         passed, failed _
     )
 
     Call RunOneTest_32( _
         "Caso6_buraco_array_objetos", _
         "itens[2].sku = 999", _
-        "{""itens"":[{},{},{""sku"":999}]}", _
+        "{\"itens\":[{},{},{\"sku\":999}]}" ,_
         passed, failed _
     )
 
@@ -86,7 +86,7 @@ Private Sub RunOneTest_32(ByVal testName As String, ByVal inputPairs As String, 
     Dim jsonPretty As String
     Dim jsonNormalized As String
 
-    jsonPretty = JSON_Unflatten(inputPairs)
+    jsonPretty = JSON_Unflatten(inputPairs) 
     jsonNormalized = JSON_Normalizar(jsonPretty)
 
     If jsonNormalized <> expectedNormalized Then
