@@ -1,8 +1,17 @@
 # DEV_JSON (VBA / Access) — Motor JSON modular
 
-Este diretório contém o motor JSON em VBA (Access/Office), organizado em módulos por responsabilidade (`modJSON_*`), além do integrador e testes.
+Este repositório contém o motor JSON em VBA (Access/Office), organizado em módulos por responsabilidade (`modJSON_*`), além do integrador e testes.
+
+## Versão estável
+
+- **Release/Tag:** `stable-2026-03-17`
+- **Testes (Access/VBA):** `RunAllTests_32: Passed=6 Failed=0` (2026-03-17)
+
+---
 
 ## Estrutura (o que tem aqui)
+
+O código VBA fica em: **`src/vba/`**
 
 ### Módulos do motor (modJSON_*)
 - `modJSON_IO.bas`  
@@ -58,10 +67,10 @@ Reconstrói o JSON original (aninhado) a partir da forma “flatten”.
 ## Como usar no Access (importar módulos)
 
 1. No Access, abra o Editor VBA (ALT+F11).
-2. Importe os arquivos `.bas` e `.cls` deste diretório:
-   - `modJSON_*.bas`
-   - `mod_Globals.bas`, `mod_Integrador.bas`, `mod_Testes.bas`
-   - `Form_frmIntegrador.cls` (se aplicável ao seu app)
+2. Importe os arquivos `.bas` e `.cls` a partir de `src/vba/`:
+   - `src/vba/modJSON_*.bas`
+   - `src/vba/mod_Globals.bas`, `src/vba/mod_Integrador.bas`, `src/vba/mod_Testes.bas`
+   - `src/vba/Form_frmIntegrador.cls` (se aplicável ao seu app)
 3. Compile o projeto:
    - VBA Editor → **Debug → Compile**
 
@@ -84,5 +93,5 @@ Resultado esperado (estado estável em 2026-03-17):
 ## Notas / Compatibilidade
 
 - O motor foi refatorado para módulos `modJSON_*` por responsabilidade.
-- Recomendado manter este diretório como **fonte da verdade** no Git e importar para o `.accdb` quando necessário.
+- Recomendado manter este repositório como **fonte da verdade** no Git e importar para o `.accdb` quando necessário.
 - Se você encontrar “texto mesclando” ao digitar no Copilot Chat no navegador, um hard refresh (Ctrl+Shift+R) costuma resolver; se persistir, limpe cookies/dados do `github.com`.
