@@ -37,11 +37,6 @@ Public Function fListaCases() As String
 
     lista = lista & vbCrLf & "JSON Flatten (csv)"
     lista = lista & vbCrLf & "JSON Flatten (pares)"
-    lista = lista & vbCrLf & "JSON Flatten (pares) v2"
-    
-    lista = lista & vbCrLf & "JSON Template (vazios)"
-    lista = lista & vbCrLf & "JSON Template (variavel)"
-    lista = lista & vbCrLf & "JSON Template (mascara)"
 
     lista = lista & vbCrLf & "JSON para CSV"
     lista = lista & vbCrLf & "JSON para CSV (híbrido)"
@@ -108,36 +103,9 @@ On Error GoTo SaidaErr
             Fases = fFase("Flatten CSV (não implementado)", Fases)
 
         Case "JSON Flatten (pares)"
-            vFvalor = JSON_FlattenPares_Raw(vFvalor)
-            Fases = fFase("Flatten Pares_Raw", Fases)
+            vFvalor = JSON_FlattenPares(vFvalor)
+            Fases = fFase("Flatten Pares", Fases)
 
-        Case "JSON Flatten (pares) v2"
-            vFvalor = JSON_FlattenPares_Raw(vFvalor)
-            Fases = fFase("Flatten Pares v2 (com indices)", Fases)
-        
-        Case "JSON Template (variavel)"
-            vFvalor = JSON_FlattenPares_Raw(vFvalor)
-            Fases = fFase("FlattenPares_Raw", Fases)
-        
-            vFvalor = JSON_TemplatePares(vFvalor, "variavel")
-            Fases = fFase("Template Variavel", Fases)
-        
-        Case "JSON Template (vazios)"
-            vFvalor = JSON_FlattenPares_Raw(vFvalor)
-            Fases = fFase("FlattenPares_Raw", Fases)
-        
-            vFvalor = JSON_TemplatePares(vFvalor, "vazios")
-            Fases = fFase("Template Vazios", Fases)
-    
-    
-        Case "JSON Template (mascara)"
-            vFvalor = JSON_FlattenPares_Raw(vFvalor)
-            Fases = fFase("FlattenPares_Raw", Fases)
-        
-            vFvalor = JSON_TemplatePares(vFvalor, "mascara")
-            Fases = fFase("Template Mascara", Fases)
-    
-        
         Case Else
             vFvalor = prmTxt
             Fases = fFase("Operação não encontrada", Fases)
